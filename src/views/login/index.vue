@@ -46,21 +46,6 @@
       </el-tooltip>
 
       <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">Login</el-button>
-
-      <div style="position:relative">
-        <div class="tips">
-          <span>Username : admin</span>
-          <span>Password : any</span>
-        </div>
-        <div class="tips">
-          <span style="margin-right:18px;">Username : editor</span>
-          <span>Password : any</span>
-        </div>
-
-        <el-button class="thirdparty-button" type="primary" @click="showDialog=true">
-          Or connect with
-        </el-button>
-      </div>
     </el-form>
 
     <el-dialog title="Or connect with" :visible.sync="showDialog">
@@ -75,6 +60,7 @@
 
 <script>
 import { validUsername } from '@/utils/validate'
+import { init } from '@/api/user'
 import SocialSign from './components/SocialSignin'
 
 export default {
@@ -128,16 +114,23 @@ export default {
     // window.addEventListener('storage', this.afterQRScan)
   },
   mounted() {
+    this.initToken();
     if (this.loginForm.username === '') {
       this.$refs.username.focus()
     } else if (this.loginForm.password === '') {
       this.$refs.password.focus()
     }
   },
+  
   destroyed() {
     // window.removeEventListener('storage', this.afterQRScan)
   },
   methods: {
+    initToken(){
+      init().then(res => {
+        console.log(res,'&');
+      });
+    },
     checkCapslock(e) {
       const { key } = e
       this.capsTooltip = key && key.length === 1 && (key >= 'A' && key <= 'Z')

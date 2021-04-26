@@ -1,5 +1,13 @@
 import request from '@/utils/request'
 
+export function init() {
+  return request({
+    url: '/init',
+    method: 'post',
+    data: {channel: '1'}
+  })
+}
+
 export function login(data) {
   return request({
     url: '/vue-element-admin/user/login',
