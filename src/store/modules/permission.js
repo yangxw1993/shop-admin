@@ -1,3 +1,11 @@
+/*
+ * @Author: your name
+ * @Date: 2021-04-26 21:41:00
+ * @LastEditTime: 2021-04-26 23:17:45
+ * @LastEditors: Please set LastEditors
+ * @Description: In User Settings Edit
+ * @FilePath: /shop-admin/src/store/modules/permission.js
+ */
 import { asyncRoutes, constantRoutes } from '@/router'
 
 /**

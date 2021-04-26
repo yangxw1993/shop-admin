@@ -60,8 +60,8 @@
 
 <script>
 import JSEncrypt from 'jsencrypt'
-import { validemail, validUsername } from '@/utils/validate'
-import { init, login } from '@/api/user'
+import { validUsername } from '@/utils/validate'
+import { init } from '@/api/user'
 import SocialSign from './components/SocialSignin'
 
 export default {
@@ -115,46 +115,44 @@ export default {
     // window.addEventListener('storage', this.afterQRScan)
   },
   mounted() {
-    this.initToken();
+    this.initToken()
     if (this.loginForm.email === '') {
       this.$refs.email.focus()
     } else if (this.loginForm.password === '') {
       this.$refs.password.focus()
     }
   },
-  
+
   destroyed() {
     // window.removeEventListener('storage', this.afterQRScan)
   },
   methods: {
-    rsaEncrypt(email, password){
+    rsaEncrypt(email, password) {
       const publicKey = '-----BEGIN PUBLIC KEY-----\n' +
         'MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDLDlyw8dJQkKGl2VCiSeZogi6d\n' +
         'GIW/VQi0XmP5yGq+HsM7Aqcsf99/NNumo23NZYF284TZtddk6R9JFzPtIWCawok6\n' +
         'JzJ//xl2WuPXPHBiTEmwmMW2ogPK4PIoZNXKpCk2j8ImXH5e7gZ23s3QwhfVaAb1\n' +
         '+HGdrYZoJqLwbP2dWwIDAQAB\n' +
         '-----END PUBLIC KEY-----'
-      let jse = new JSEncrypt();
-      jse.setPublicKey(publicKey);
-      const time = Date.now() + '';
+      const jse = new JSEncrypt()
+      jse.setPublicKey(publicKey)
+      const time = Date.now() + ''
       const originStr = JSON.stringify({
         email, password,
-        "ts": time
+        'ts': time
       })
-      const data = jse.encrypt( originStr );
+      const data = jse.encrypt(originStr)
       return { data, ts: time }
     },
-    async initToken(){
-      let token = localStorage.getItem('token');
-      if(!token){
-        const data = await init();
-        if(data && data.token){
-          localStorage.setItem('token', data.token);
-          token = data.token;
+    async initToken() {
+      let token = localStorage.getItem('token')
+      if (!token) {
+        const data = await init()
+        if (data && data.token) {
+          localStorage.setItem('token', data.token)
+          token = data.token
         }
       }
-
-      
     },
     checkCapslock(e) {
       const { key } = e
@@ -171,17 +169,8 @@ export default {
       })
     },
     handleLogin() {
-      const {email, password} = this.loginForm;
-      /* this.loading = true
-      login(this.rsaEncrypt(email, password)).then(res => {
-        if(res && res.token && res.user_info){
-          localStorage.setItem('token', res.token);
-          res.user_info.roles = ['admin']
-          this.$localStorage('userInfo', res.user_info);
-        }
-        this.loading = false
-      }).catch(err => {});
-      return;  */
+      const { email, password } = this.loginForm
+      this.loading = true
       this.$store.dispatch('user/login', this.rsaEncrypt(email, password))
         .then(() => {
           this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
@@ -190,15 +179,6 @@ export default {
         .catch(() => {
           this.loading = false
         })
-      this.$refs.loginForm.validate(valid => {
-        if (valid) {
-          this.loading = true
-          
-        } else {
-          console.log('error submit!!')
-          return false
-        }
-      })
     },
     getOtherQuery(query) {
       return Object.keys(query).reduce((acc, cur) => {

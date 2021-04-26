@@ -1,3 +1,11 @@
+/*
+ * @Author: your name
+ * @Date: 2021-04-26 21:41:00
+ * @LastEditTime: 2021-04-26 23:18:27
+ * @LastEditors: Please set LastEditors
+ * @Description: In User Settings Edit
+ * @FilePath: /shop-admin/src/permission.js
+ */
 import router from './router'
 import store from './store'
 import { Message } from 'element-ui'
@@ -33,13 +41,10 @@ router.beforeEach(async(to, from, next) => {
       if (hasRoles) {
         next()
       } else {
-        debugger
         try {
           // get user info
           // note: roles must be a object array! such as: ['admin'] or ,['developer','editor']
-          debugger
-          const { roles } = await store.dispatch('getInfo')
-          debugger
+          const { roles } = await store.dispatch('user/getInfo')
           // generate accessible routes map based on roles
           const accessRoutes = await store.dispatch('permission/generateRoutes', roles)
 
@@ -50,9 +55,9 @@ router.beforeEach(async(to, from, next) => {
           // set the replace: true, so the navigation will not leave a history record
           next({ ...to, replace: true })
         } catch (error) {
+          console.log(error, 'error')
           // remove token and go to login page to re-login
           await store.dispatch('user/resetToken')
-           debugger
 
           Message.error(error || 'Has Error')
           next(`/login?redirect=${to.path}`)

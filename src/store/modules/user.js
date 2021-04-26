@@ -8,7 +8,7 @@ const state = {
   avatar: '',
   introduction: '',
   roles: [],
-  userInfo: {},
+  userInfo: {}
 }
 
 const mutations = {
@@ -37,12 +37,13 @@ const actions = {
   login({ commit }, userInfo) {
     return new Promise((resolve, reject) => {
       login(userInfo).then(response => {
-        const { user_info = {}, token = '' } = response;
-        const roles = ['admin'];
-        user_info.roles = roles;
+        const { user_info = {}, token = '' } = response
+        const roles = ['admin']
+        user_info.roles = roles
+        localStorage.setItem('userInfo', JSON.stringify(user_info))
         commit('SET_TOKEN', token)
-        commit('SET_USER_INFO', user_info);
-        commit('SET_ROLES', roles);
+        commit('SET_USER_INFO', user_info)
+        commit('SET_ROLES', roles)
         setToken(token)
         resolve()
       }).catch(error => {
@@ -54,24 +55,21 @@ const actions = {
   // get user info
   getInfo({ commit, state }) {
     return new Promise((resolve, reject) => {
-      getInfo(state.token).then(response => {
-        const { data } = response
-        if (!data) {
-          reject('Verification failed, please Login again.')
+      getInfo().then(response => {
+        if (!response) {
+          reject('校验失败，请重新登录！')
         }
-
-        const { roles, name, avatar, introduction } = data
-
+        const { roles, username = '', face_img = '' } = response
         // roles must be a non-empty array
         if (!roles || roles.length <= 0) {
           reject('getInfo: roles must be a non-null array!')
         }
 
         commit('SET_ROLES', roles)
-        commit('SET_NAME', name)
-        commit('SET_AVATAR', avatar)
-        commit('SET_INTRODUCTION', introduction)
-        resolve(data)
+        commit('SET_NAME', username)
+        commit('SET_AVATAR', face_img)
+        // commit('SET_INTRODUCTION', introduction)
+        resolve(response)
       }).catch(error => {
         reject(error)
       })
