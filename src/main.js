@@ -19,6 +19,7 @@ import './permission' // permission control
 import './utils/error-log' // error log
 
 import * as filters from './filters' // global filters
+import {localSetItem, localGetItem} from './utils/index'
 
 /**
  * If you don't want to use mock-server
@@ -43,7 +44,9 @@ Object.keys(filters).forEach(key => {
   Vue.filter(key, filters[key])
 })
 
-Vue.config.productionTip = false
+Vue.config.productionTip = false;
+Vue.config.$localSetItem = localSetItem;
+Vue.config.$localGetItem = localGetItem;
 
 new Vue({
   el: '#app',

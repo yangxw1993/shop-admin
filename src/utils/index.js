@@ -355,3 +355,45 @@ export function removeClass(ele, cls) {
     ele.className = ele.className.replace(reg, ' ')
   }
 }
+/**
+ * 是否JSON字符串
+ * @param {*} str 
+ * @returns 
+ */
+function isJSONStr(str){
+  if (typeof str == 'string') {
+    try {
+      let obj = JSON.parse(str);
+      return typeof obj == 'object' && obj;
+    } catch (e) {
+      return false;
+    }
+  }else{
+    return false
+  }
+}
+/**
+ * 
+ * @param {*} key 
+ * @param {*} value 
+ */
+export function localSetItem(key, value) {
+  if(value){
+    if(typeof value === 'object'){
+      localStorage.setItem(key, JSON.stringify(value))
+    }else{
+      localStorage.setItem(key, value)
+    }
+  }else{
+    localStorage.setItem(key, false)
+  }
+}
+/**
+ * 获取localstorage
+ * @param {*} key 
+ * @returns 
+ */
+export function localGetItem(key) {
+  const value = localStorage.getItem(key)
+  return isJSONStr(value) ? JSON.parse(value) : value;
+}

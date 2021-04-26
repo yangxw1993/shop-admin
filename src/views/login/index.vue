@@ -6,15 +6,15 @@
         <h3 class="title">Login Form</h3>
       </div>
 
-      <el-form-item prop="username">
+      <el-form-item prop="email">
         <span class="svg-container">
           <svg-icon icon-class="user" />
         </span>
         <el-input
-          ref="username"
-          v-model="loginForm.username"
-          placeholder="Username"
-          name="username"
+          ref="email"
+          v-model="loginForm.email"
+          placeholder="email"
+          name="email"
           type="text"
           tabindex="1"
           autocomplete="on"
@@ -59,15 +59,16 @@
 </template>
 
 <script>
-import { validUsername } from '@/utils/validate'
-import { init } from '@/api/user'
+import JSEncrypt from 'jsencrypt'
+import { validemail, validUsername } from '@/utils/validate'
+import { init, login } from '@/api/user'
 import SocialSign from './components/SocialSignin'
 
 export default {
   name: 'Login',
   components: { SocialSign },
   data() {
-    const validateUsername = (rule, value, callback) => {
+    const validateEmail = (rule, value, callback) => {
       if (!validUsername(value)) {
         callback(new Error('Please enter the correct user name'))
       } else {
@@ -83,11 +84,11 @@ export default {
     }
     return {
       loginForm: {
-        username: 'admin',
-        password: '111111'
+        email: 'Janus_Zhao@163.com',
+        password: 'passwordblabla'
       },
       loginRules: {
-        username: [{ required: true, trigger: 'blur', validator: validateUsername }],
+        email: [{ required: true, trigger: 'blur', validator: validateEmail }],
         password: [{ required: true, trigger: 'blur', validator: validatePassword }]
       },
       passwordType: 'password',
@@ -115,8 +116,8 @@ export default {
   },
   mounted() {
     this.initToken();
-    if (this.loginForm.username === '') {
-      this.$refs.username.focus()
+    if (this.loginForm.email === '') {
+      this.$refs.email.focus()
     } else if (this.loginForm.password === '') {
       this.$refs.password.focus()
     }
@@ -126,10 +127,34 @@ export default {
     // window.removeEventListener('storage', this.afterQRScan)
   },
   methods: {
-    initToken(){
-      init().then(res => {
-        console.log(res,'&');
-      });
+    rsaEncrypt(email, password){
+      const publicKey = '-----BEGIN PUBLIC KEY-----\n' +
+        'MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDLDlyw8dJQkKGl2VCiSeZogi6d\n' +
+        'GIW/VQi0XmP5yGq+HsM7Aqcsf99/NNumo23NZYF284TZtddk6R9JFzPtIWCawok6\n' +
+        'JzJ//xl2WuPXPHBiTEmwmMW2ogPK4PIoZNXKpCk2j8ImXH5e7gZ23s3QwhfVaAb1\n' +
+        '+HGdrYZoJqLwbP2dWwIDAQAB\n' +
+        '-----END PUBLIC KEY-----'
+      let jse = new JSEncrypt();
+      jse.setPublicKey(publicKey);
+      const time = Date.now() + '';
+      const originStr = JSON.stringify({
+        email, password,
+        "ts": time
+      })
+      const data = jse.encrypt( originStr );
+      return { data, ts: time }
+    },
+    async initToken(){
+      let token = localStorage.getItem('token');
+      if(!token){
+        const data = await init();
+        if(data && data.token){
+          localStorage.setItem('token', data.token);
+          token = data.token;
+        }
+      }
+
+      
     },
     checkCapslock(e) {
       const { key } = e
@@ -146,17 +171,29 @@ export default {
       })
     },
     handleLogin() {
+      const {email, password} = this.loginForm;
+      /* this.loading = true
+      login(this.rsaEncrypt(email, password)).then(res => {
+        if(res && res.token && res.user_info){
+          localStorage.setItem('token', res.token);
+          res.user_info.roles = ['admin']
+          this.$localStorage('userInfo', res.user_info);
+        }
+        this.loading = false
+      }).catch(err => {});
+      return;  */
+      this.$store.dispatch('user/login', this.rsaEncrypt(email, password))
+        .then(() => {
+          this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
+          this.loading = false
+        })
+        .catch(() => {
+          this.loading = false
+        })
       this.$refs.loginForm.validate(valid => {
         if (valid) {
           this.loading = true
-          this.$store.dispatch('user/login', this.loginForm)
-            .then(() => {
-              this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
-              this.loading = false
-            })
-            .catch(() => {
-              this.loading = false
-            })
+          
         } else {
           console.log('error submit!!')
           return false
@@ -171,24 +208,6 @@ export default {
         return acc
       }, {})
     }
-    // afterQRScan() {
-    //   if (e.key === 'x-admin-oauth-code') {
-    //     const code = getQueryObject(e.newValue)
-    //     const codeMap = {
-    //       wechat: 'code',
-    //       tencent: 'code'
-    //     }
-    //     const type = codeMap[this.auth_type]
-    //     const codeName = code[type]
-    //     if (codeName) {
-    //       this.$store.dispatch('LoginByThirdparty', codeName).then(() => {
-    //         this.$router.push({ path: this.redirect || '/' })
-    //       })
-    //     } else {
-    //       alert('第三方登录失败')
-    //     }
-    //   }
-    // }
   }
 }
 </script>
