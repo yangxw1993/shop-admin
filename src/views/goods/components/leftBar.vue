@@ -49,6 +49,11 @@
           label: 'label'
         }
       }
+    },
+    methods: {
+      handleNodeClick(data) {
+        console.log(data);
+      }
     }
   }
 </script>
