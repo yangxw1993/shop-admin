@@ -101,6 +101,179 @@ export const constantRoutes = [
       }
     ]
   },
+  {
+    path: '/order',
+    name: '订单管理',
+    meta: {
+      icon: 'el-icon-s-order',
+      title: '订单管理'
+    },
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        name: '订单列表',
+        meta: {
+          icon: 'ios-document',
+          title: '订单列表'
+        },
+        component: () => import('@/views/order/index')
+      },
+      {
+        path: 'after',
+        name: '售后订单',
+        meta: {
+          hideInMenu: true,
+          icon: 'md-clipboard',
+          title: '商品详情'
+        },
+        component: () => import('@/views/order/after-sales')
+      },
+    ]
+  },
+  {
+    path: '/member',
+    component: Layout,
+    redirect: '/member/index',
+    meta: {
+      icon: 'user',
+      title: '会员管理'
+    },
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/member/index'),
+        name: 'Dashboard',
+        meta: { title: '会员列表', icon: 'user', affix: true }
+      }
+    ]
+  },
+  {
+    path: '/promotion',
+    name: '促销管理',
+    meta: {
+      icon: 'el-icon-s-ticket',
+      title: '促销管理'
+    },
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        name: '促销列表',
+        meta: {
+          icon: 'ios-document',
+          title: '促销列表'
+        },
+        component: () => import('@/views/promotion/index')
+      },
+      {
+        path: 'send-coupon',
+        name: '发放优惠券',
+        meta: {
+          hideInMenu: true,
+          icon: 'md-clipboard',
+          title: '发放优惠券'
+        },
+        component: () => import('@/views/promotion/send-coupon')
+      },
+    ]
+  },
+  {
+    path: '/content',
+    name: '内容管理',
+    meta: {
+      icon: 'theme',
+      title: '内容管理'
+    },
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        name: 'H5/小程序首页',
+        meta: {
+          icon: 'ios-document',
+          title: 'H5/小程序首页'
+        },
+        component: () => import('@/views/content/mini')
+      },
+      {
+        path: 'pc',
+        name: 'PC官网页面设置',
+        meta: {
+          hideInMenu: true,
+          icon: 'md-clipboard',
+          title: 'PC官网页面设置'
+        },
+        component: () => import('@/views/content/pc')
+      },
+      {
+        path: 'nav',
+        name: 'PC导航设置',
+        meta: {
+          hideInMenu: true,
+          icon: 'md-clipboard',
+          title: 'PC导航设置'
+        },
+        component: () => import('@/views/content/nav')
+      },
+    ]
+  },
+  {
+    path: '/tool',
+    name: '工具箱',
+    meta: {
+      icon: 'el-icon-suitcase',
+      title: '工具箱'
+    },
+    component: Layout,
+    children: [
+      {
+        path: 'send-sms',
+        name: '群发短信',
+        meta: {
+          icon: 'el-icon-s-comment',
+          title: '群发短信'
+        },
+        component: () => import('@/views/tool/send-sms')
+      },
+      {
+        path: 'refresh-cdn',
+        name: 'PC官网页面设置',
+        meta: {
+          hideInMenu: true,
+          icon: 'md-clipboard',
+          title: 'PC官网页面设置'
+        },
+        component: () => import('@/views/tool/refresh-cdn')
+      }
+    ]
+  },
+  {
+    path: '/setting',
+    name: '系统设置',
+    meta: {
+      icon: 'el-icon-setting',
+      title: '系统设置'
+    },
+    component: Layout,
+    children: [
+      {
+        path: 'menu',
+        name: '菜单管理',
+        component: () => import('@/views/setting/menu')
+      },
+      {
+        path: 'role',
+        name: '角色管理',
+        component: () => import('@/views/setting/role')
+      },
+      {
+        path: 'employee',
+        name: '员工管理',
+        component: () => import('@/views/setting/employee')
+      }
+    ]
+  },
 ]
 
 /**
