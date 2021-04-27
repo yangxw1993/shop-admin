@@ -5,7 +5,7 @@ import router, { resetRouter } from '@/router'
 const state = {
   token: getToken(),
   name: '',
-  avatar: '',
+  avatar: 'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png',
   introduction: '',
   roles: [],
   userInfo: {}
@@ -67,7 +67,7 @@ const actions = {
 
         commit('SET_ROLES', roles)
         commit('SET_NAME', username)
-        commit('SET_AVATAR', face_img)
+        commit('SET_AVATAR', face_img || 'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png')
         // commit('SET_INTRODUCTION', introduction)
         resolve(response)
       }).catch(error => {

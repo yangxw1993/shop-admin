@@ -238,11 +238,11 @@ export const constantRoutes = [
       },
       {
         path: 'refresh-cdn',
-        name: 'PC官网页面设置',
+        name: '刷CDN',
         meta: {
           hideInMenu: true,
           icon: 'md-clipboard',
-          title: 'PC官网页面设置'
+          title: '刷CDN'
         },
         component: () => import('@/views/tool/refresh-cdn')
       }
